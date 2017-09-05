@@ -14,7 +14,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="100dp"
         android:ems="10"
-        android:hint="Введите число подходов"
+        android:hint="@string/number_approaches_hint"
         android:inputType="number"
         app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
-        android:text="Старт"
+        android:text="@string/start_button_text"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
@@ -36,32 +36,32 @@
 
     <EditText
         android:id="@+id/approachTimerEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="time"
+        android:layout_width="92dp"
+        android:layout_height="37dp"
         android:layout_marginLeft="8dp"
+        android:ems="10"
+        android:hint="@string/zero_time_hint"
+        android:inputType="time"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="61dp"
-        app:layout_constraintTop_toBottomOf="@+id/numberApproachesEditText"
-        app:layout_constraintHorizontal_bias="0.503" />
+        app:layout_constraintHorizontal_bias="0.242"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="288dp" />
 
     <EditText
         android:id="@+id/restTimerEitText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="92dp"
+        android:layout_height="37dp"
+        android:layout_marginRight="8dp"
         android:ems="10"
+        android:hint="@string/zero_time_hint"
         android:inputType="time"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/startButton"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/approachTimerEditText"
-        app:layout_constraintHorizontal_bias="0.503" />
+        app:layout_constraintHorizontal_bias="0.771"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="288dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -24,5 +24,10 @@ public class MainActivity extends Activity {
     public void onClick(View view) {
         Audio gong = new Audio();
         gong.playGong(this);
+
+        Timer timer = new Timer();
+        timer.setTime("02:23:73");
+        timer.setEditText(approachTimerEditText);
+        timer.start();
     }
 }
