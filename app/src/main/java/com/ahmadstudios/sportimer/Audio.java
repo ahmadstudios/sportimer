@@ -6,8 +6,8 @@ import android.media.MediaPlayer;
 public class Audio {
     private MediaPlayer mediaPlayer;
 
-    public void playGong(Context context){
-        mediaPlayer = MediaPlayer.create(context, R.raw.gong);
+    public void playSound(Context context, int resid){
+        mediaPlayer = MediaPlayer.create(context, resid);
         mediaPlayer.start();
     }
 }

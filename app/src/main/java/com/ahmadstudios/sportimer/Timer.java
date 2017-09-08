@@ -1,27 +1,57 @@
 package com.ahmadstudios.sportimer;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.widget.EditText;
 
 public class Timer {
 
-    private long time;
-    private EditText editText;
+    private long firstTimerTime;
+    private long secondTimerTime;
+    private long currentTime;
+    private int numberApproaches;
+    private EditText firstTimerEditText;
+    private EditText secondTimerEditText;
+    private EditText currentTimerEditText;
+    private boolean isSecondTimer = false;
+    private Audio sound = new Audio();
 
-    public void setTime(String timeInString) {
-        long minutes = Long.parseLong(timeInString.substring(0, 2));
-        long seconds = Long.parseLong(timeInString.substring(3, 5));
-        long milliseconds = Long.parseLong(timeInString.substring(6, 8));
 
-        time = minutes * 60000 + seconds * 1000 + milliseconds * 10;
+    public void setFirstTimerTime(int minutes, int seconds) {
+        firstTimerTime = minutes * 60000 + seconds * 1000;
     }
 
-    public void setEditText(EditText approachTimerEditText) {
-        editText = approachTimerEditText;
+    public void setSecondTimerTime(int minutes, int seconds) {
+        secondTimerTime = minutes * 60000 + seconds * 1000;
     }
 
-    public void start() {
-        CountDownTimer timer = new CountDownTimer(time, 10) {
+    public void setFirstTimerEditText(EditText editText) {
+        firstTimerEditText = editText;
+    }
+
+    public void setSecondTimerEditText(EditText editText) {
+        secondTimerEditText = editText;
+    }
+
+    public void setNumberApproaches(String number) {
+        numberApproaches = Integer.parseInt(number);
+    }
+
+    public void startTimer(final Context context)
+    {
+        if(isSecondTimer) {
+            currentTime = secondTimerTime;
+            currentTimerEditText = secondTimerEditText;
+            isSecondTimer = false;
+        } else {
+            currentTime = firstTimerTime;
+            currentTimerEditText = firstTimerEditText;
+            isSecondTimer = true;
+
+            sound.playSound(context, R.raw.gong);
+        }
+
+        CountDownTimer timer = new CountDownTimer(currentTime, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long minutes = millisUntilFinished / 60000;
@@ -31,16 +61,23 @@ public class Timer {
                 String stringSeconds = Long.toString(seconds);
                 String stringMilliseconds = Long.toString(milliseconds);
 
+                if (seconds == 10 && milliseconds == 50) sound.playSound(context, R.raw.tick);
+
                 if (minutes < 10) stringMinutes = "0" + stringMinutes;
                 if (seconds < 10) stringSeconds = "0" + stringSeconds;
                 if (milliseconds < 10) stringMilliseconds = "0" + milliseconds;
 
-                editText.setText(stringMinutes + ":" + stringSeconds + ":" + stringMilliseconds);
+                currentTimerEditText.setText(stringMinutes + ":" + stringSeconds + ":" + stringMilliseconds);
             }
 
             @Override
             public void onFinish() {
-                editText.setText("Бабах!");
+                currentTimerEditText.setText(R.string.zeros_of_timer);
+                if (isSecondTimer) numberApproaches--;
+                if (numberApproaches > 0)
+                {
+                    startTimer(context);
+                } else isSecondTimer = false;
             }
         }.start();
     }
