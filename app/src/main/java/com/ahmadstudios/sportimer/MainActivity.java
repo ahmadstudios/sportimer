@@ -1,6 +1,7 @@
 package com.ahmadstudios.sportimer;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,7 +12,6 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
     private EditText approachTimerEditText;
     private EditText restTimerEditText;
     private Timer timer = new Timer();
-    private boolean restTimerFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,18 +21,17 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
         approachTimerEditText = findViewById(R.id.approachTimerEditText);
         restTimerEditText = findViewById(R.id.restTimerEitText);
 
-        approachTimerEditText.setOnTouchListener(touchListener("SetApproachTimer", false));
-        restTimerEditText.setOnTouchListener(touchListener("SetRestTimer", true));
+        approachTimerEditText.setOnTouchListener(touchListener("ApproachTimer"));
+        restTimerEditText.setOnTouchListener(touchListener("RestTimer"));
     }
 
-    private View.OnTouchListener touchListener (final String tag, final boolean isRestTimer) {
+    private View.OnTouchListener touchListener (final String tag) {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    SetTimerDialogFragment dialog = new SetTimerDialogFragment();
+                    DialogFragment dialog = new SetTimerDialogFragment();
                     dialog.show(getFragmentManager(), tag);
-                    restTimerFlag = isRestTimer;
                 }
                 return false;
             }
@@ -40,13 +39,13 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
     }
 
     @Override
-    public void onDialogPositiveClick (int minutes, int seconds)
+    public void onDialogPositiveClick (int minutes, int seconds, String tag)
     {
         String stringMinutes = Integer.toString(minutes);
         String stringSeconds = Integer.toString(seconds);
         if (minutes < 10) stringMinutes = "0" + stringMinutes;
         if (seconds < 10) stringSeconds = "0" + stringSeconds;
-        if (!restTimerFlag) {
+        if (tag.equals("ApproachTimer")) {
             timer.setFirstTimerTime(minutes, seconds);
             approachTimerEditText.setText(stringMinutes + ":" + stringSeconds + ":00");
         } else {

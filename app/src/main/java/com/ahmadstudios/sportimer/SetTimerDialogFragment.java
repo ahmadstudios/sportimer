@@ -12,8 +12,8 @@ import android.widget.NumberPicker;
 
 public class SetTimerDialogFragment extends DialogFragment {
 
-    public interface SetTimerDialogListener {
-        void onDialogPositiveClick(int minutes, int seconds);
+    interface SetTimerDialogListener {
+        void onDialogPositiveClick(int minutes, int seconds, String tag);
     }
 
     private SetTimerDialogListener listener;
@@ -45,7 +45,7 @@ public class SetTimerDialogFragment extends DialogFragment {
                 .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        listener.onDialogPositiveClick(minutesNumberPicker.getValue(), secondsNumberPicker.getValue());
+                        listener.onDialogPositiveClick(minutesNumberPicker.getValue(), secondsNumberPicker.getValue(), getTag());
                     }
                 })
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
