@@ -1,44 +1,36 @@
 package com.ahmadstudios.sportimer;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.widget.EditText;
 
-public class Timer {
+class Timer {
 
     private long firstTimerTime;
     private long secondTimerTime;
-    private long currentTime;
     private int numberApproaches;
-    private EditText firstTimerEditText;
-    private EditText secondTimerEditText;
-    private EditText currentTimerEditText;
     private boolean isSecondTimer = false;
-    private Audio sound = new Audio();
+    private boolean tickPlays; //Флаг, который определяет, начался ли проигрываться звук тиканья
 
-
-    public void setFirstTimerTime(int minutes, int seconds) {
+    void setFirstTimerTime(int minutes, int seconds) {
         firstTimerTime = minutes * 60000 + seconds * 1000;
     }
 
-    public void setSecondTimerTime(int minutes, int seconds) {
+    void setSecondTimerTime(int minutes, int seconds) {
         secondTimerTime = minutes * 60000 + seconds * 1000;
     }
 
-    public void setFirstTimerEditText(EditText editText) {
-        firstTimerEditText = editText;
-    }
-
-    public void setSecondTimerEditText(EditText editText) {
-        secondTimerEditText = editText;
-    }
-
-    public void setNumberApproaches(String number) {
+    void setNumberApproaches(String number) {
         numberApproaches = Integer.parseInt(number);
     }
 
-    public void startTimer(final Context context)
+    void startTimer(final Context context, final EditText firstTimerEditText, final EditText secondTimerEditText)
     {
+        long currentTime;
+        final EditText currentTimerEditText;
+        tickPlays = false;
+
         if(isSecondTimer) {
             currentTime = secondTimerTime;
             currentTimerEditText = secondTimerEditText;
@@ -48,10 +40,10 @@ public class Timer {
             currentTimerEditText = firstTimerEditText;
             isSecondTimer = true;
 
-            sound.playSound(context, R.raw.gong);
+            MediaPlayer.create(context, R.raw.gong).start();
         }
 
-        CountDownTimer timer = new CountDownTimer(currentTime, 10) {
+       new CountDownTimer(currentTime, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long minutes = millisUntilFinished / 60000;
@@ -61,7 +53,11 @@ public class Timer {
                 String stringSeconds = Long.toString(seconds);
                 String stringMilliseconds = Long.toString(milliseconds);
 
-                if (seconds == 10 && milliseconds == 50) sound.playSound(context, R.raw.tick);
+                if (!isSecondTimer && seconds == 10 && millisUntilFinished < 10100 && !tickPlays)
+                {
+                    MediaPlayer.create(context, R.raw.tick).start();
+                    tickPlays = true;
+                }
 
                 if (minutes < 10) stringMinutes = "0" + stringMinutes;
                 if (seconds < 10) stringSeconds = "0" + stringSeconds;
@@ -76,7 +72,7 @@ public class Timer {
                 if (isSecondTimer) numberApproaches--;
                 if (numberApproaches > 0)
                 {
-                    startTimer(context);
+                    startTimer(context, firstTimerEditText, secondTimerEditText);
                 } else isSecondTimer = false;
             }
         }.start();

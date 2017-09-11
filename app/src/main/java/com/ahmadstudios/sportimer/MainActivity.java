@@ -1,7 +1,6 @@
 package com.ahmadstudios.sportimer;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity implements SetTimerDialogFragment.SetTimerDialogListener {
 
-    private EditText numberApproachesEditText;
     private EditText approachTimerEditText;
     private EditText restTimerEditText;
     private Timer timer = new Timer();
@@ -20,33 +18,25 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        numberApproachesEditText = findViewById(R.id.numberApproachesEditText);
         approachTimerEditText = findViewById(R.id.approachTimerEditText);
         restTimerEditText = findViewById(R.id.restTimerEitText);
 
-        approachTimerEditText.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == motionEvent.ACTION_DOWN) {
-                    SetTimerDialogFragment dialog = new SetTimerDialogFragment();
-                    dialog.show(getFragmentManager(), "SetApproachTimer");
-                    restTimerFlag = false;
-                }
-                return false;
-            }
-        });
+        approachTimerEditText.setOnTouchListener(touchListener("SetApproachTimer", false));
+        restTimerEditText.setOnTouchListener(touchListener("SetRestTimer", true));
+    }
 
-        restTimerEditText.setOnTouchListener(new View.OnTouchListener() {
+    private View.OnTouchListener touchListener (final String tag, final boolean isRestTimer) {
+        return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == motionEvent.ACTION_DOWN) {
-                    DialogFragment dialog = new SetTimerDialogFragment();
-                    dialog.show(getFragmentManager(), "SetRestTimer");
-                    restTimerFlag = true;
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    SetTimerDialogFragment dialog = new SetTimerDialogFragment();
+                    dialog.show(getFragmentManager(), tag);
+                    restTimerFlag = isRestTimer;
                 }
                 return false;
             }
-        });
+        };
     }
 
     @Override
@@ -66,12 +56,9 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
     }
 
     public void onClick(View view) {
-        timer.setFirstTimerEditText(approachTimerEditText);
-        timer.setSecondTimerEditText(restTimerEditText);
-        timer.setNumberApproaches(numberApproachesEditText.getText().toString());
-        timer.startTimer(this);
+        EditText numberApproachesEditText = findViewById(R.id.numberApproachesEditText);
 
-//        approachTimerEditText.setFocusableInTouchMode(false);
-//        restTimerEditText.setFocusableInTouchMode(false);
+        timer.setNumberApproaches(numberApproachesEditText.getText().toString());
+        timer.startTimer(this, approachTimerEditText, restTimerEditText);
     }
 }
