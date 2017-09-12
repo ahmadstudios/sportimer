@@ -66,13 +66,11 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
     public void onTimerFinish (EditText editText) {
         if (numberApproaches > 1) {
             if (editText == approachTimerEditText) {
-                timer.setTime(restMinutes, restSeconds);
-                timer.startTimer(this, restTimerEditText);
+                timer.startTimer(this, restTimerEditText, restMinutes, restSeconds);
             } else {
                 numberApproaches--;
                 MediaPlayer.create(this, R.raw.gong).start();
-                timer.setTime(approachMinutes, approachSeconds);
-                timer.startTimer(this, approachTimerEditText);
+                timer.startTimer(this, approachTimerEditText, approachMinutes, approachSeconds);
             }
         }
     }
@@ -85,7 +83,6 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
     public void onClick(View view) {
         numberApproaches = Integer.parseInt(((EditText)findViewById(R.id.numberApproachesEditText)).getText().toString());
         MediaPlayer.create(this, R.raw.gong).start();
-        timer.setTime(approachMinutes, approachSeconds);
-        timer.startTimer(this, approachTimerEditText);
+        timer.startTimer(this, approachTimerEditText, approachMinutes, approachSeconds);
     }
 }

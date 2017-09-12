@@ -5,7 +5,6 @@ import android.widget.EditText;
 
 class Timer {
 
-    private long time;
     private boolean tickPlays; //Флаг, который определяет, начался ли проигрываться звук тиканья
 
     interface TimerListener {
@@ -13,11 +12,8 @@ class Timer {
         void onTimerWork(EditText editText);
     }
 
-    void setTime(int minutes, int seconds) {
-        time = minutes * 60000 + seconds * 1000;
-    }
-
-    void startTimer(final TimerListener timerListener, final EditText editText) {
+    void startTimer(final TimerListener timerListener, final EditText editText, int minutes, int seconds) {
+        long time = minutes * 60000 + seconds * 1000;
         tickPlays = false;
 
         new CountDownTimer(time, 10) {
@@ -30,14 +26,14 @@ class Timer {
                 String stringSeconds = Long.toString(seconds);
                 String stringMilliseconds = Long.toString(milliseconds);
 
+                if (minutes < 10) stringMinutes = "0" + stringMinutes;
+                if (seconds < 10) stringSeconds = "0" + stringSeconds;
+                if (milliseconds < 10) stringMilliseconds = "0" + milliseconds;
+
                 if (seconds == 10 && millisUntilFinished < 10200 && !tickPlays) {
                     timerListener.onTimerWork(editText);
                     tickPlays = true;
                 }
-
-                if (minutes < 10) stringMinutes = "0" + stringMinutes;
-                if (seconds < 10) stringSeconds = "0" + stringSeconds;
-                if (milliseconds < 10) stringMilliseconds = "0" + milliseconds;
 
                 editText.setText(stringMinutes + ":" + stringSeconds + ":" + stringMilliseconds);
             }
