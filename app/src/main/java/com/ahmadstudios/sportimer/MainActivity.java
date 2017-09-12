@@ -2,16 +2,22 @@ package com.ahmadstudios.sportimer;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
-public class MainActivity extends Activity implements SetTimerDialogFragment.SetTimerDialogListener {
+public class MainActivity extends Activity implements SetTimerDialogFragment.SetTimerDialogListener, Timer.TimerListener {
 
     private EditText approachTimerEditText;
     private EditText restTimerEditText;
     private Timer timer = new Timer();
+    private int restMinutes;
+    private int restSeconds;
+    private int approachMinutes;
+    private int approachSeconds;
+    private int numberApproaches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +25,7 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
         setContentView(R.layout.activity_main);
 
         approachTimerEditText = findViewById(R.id.approachTimerEditText);
-        restTimerEditText = findViewById(R.id.restTimerEitText);
+        restTimerEditText = findViewById(R.id.restTimerEditText);
 
         approachTimerEditText.setOnTouchListener(touchListener("ApproachTimer"));
         restTimerEditText.setOnTouchListener(touchListener("RestTimer"));
@@ -46,18 +52,40 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
         if (minutes < 10) stringMinutes = "0" + stringMinutes;
         if (seconds < 10) stringSeconds = "0" + stringSeconds;
         if (tag.equals("ApproachTimer")) {
-            timer.setFirstTimerTime(minutes, seconds);
+            approachMinutes = minutes;
+            approachSeconds = seconds;
             approachTimerEditText.setText(stringMinutes + ":" + stringSeconds + ":00");
         } else {
-            timer.setSecondTimerTime(minutes, seconds);
+            restMinutes = minutes;
+            restSeconds = seconds;
             restTimerEditText.setText(stringMinutes + ":" + stringSeconds + ":00");
         }
     }
 
-    public void onClick(View view) {
-        EditText numberApproachesEditText = findViewById(R.id.numberApproachesEditText);
+    @Override
+    public void onTimerFinish (EditText editText) {
+        if (numberApproaches > 1) {
+            if (editText == approachTimerEditText) {
+                timer.setTime(restMinutes, restSeconds);
+                timer.startTimer(this, restTimerEditText);
+            } else {
+                numberApproaches--;
+                MediaPlayer.create(this, R.raw.gong).start();
+                timer.setTime(approachMinutes, approachSeconds);
+                timer.startTimer(this, approachTimerEditText);
+            }
+        }
+    }
 
-        timer.setNumberApproaches(numberApproachesEditText.getText().toString());
-        timer.startTimer(this, approachTimerEditText, restTimerEditText);
+    @Override
+    public void onTimerWork (EditText editText) {
+        if (editText == restTimerEditText) MediaPlayer.create(this, R.raw.tick).start();
+    }
+
+    public void onClick(View view) {
+        numberApproaches = Integer.parseInt(((EditText)findViewById(R.id.numberApproachesEditText)).getText().toString());
+        MediaPlayer.create(this, R.raw.gong).start();
+        timer.setTime(approachMinutes, approachSeconds);
+        timer.startTimer(this, approachTimerEditText);
     }
 }
