@@ -47,18 +47,14 @@ public class MainActivity extends Activity implements SetTimerDialogFragment.Set
     @Override
     public void onDialogPositiveClick (int minutes, int seconds, String tag)
     {
-        String stringMinutes = Integer.toString(minutes);
-        String stringSeconds = Integer.toString(seconds);
-        if (minutes < 10) stringMinutes = "0" + stringMinutes;
-        if (seconds < 10) stringSeconds = "0" + stringSeconds;
         if (tag.equals("ApproachTimer")) {
             approachMinutes = minutes;
             approachSeconds = seconds;
-            approachTimerEditText.setText(stringMinutes + ":" + stringSeconds + ":00");
+            approachTimerEditText.setText(timer.stringNumber(minutes) + ":" + timer.stringNumber(seconds) + ":00");
         } else {
             restMinutes = minutes;
             restSeconds = seconds;
-            restTimerEditText.setText(stringMinutes + ":" + stringSeconds + ":00");
+            restTimerEditText.setText(timer.stringNumber(minutes) + ":" + timer.stringNumber(seconds) + ":00");
         }
     }
 

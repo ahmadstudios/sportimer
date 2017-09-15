@@ -22,20 +22,13 @@ class Timer {
                 long minutes = millisUntilFinished / 60000;
                 long seconds = (millisUntilFinished - minutes * 60000) / 1000;
                 long milliseconds = ((millisUntilFinished - minutes * 60000) % 1000) / 10;
-                String stringMinutes = Long.toString(minutes);
-                String stringSeconds = Long.toString(seconds);
-                String stringMilliseconds = Long.toString(milliseconds);
-
-                if (minutes < 10) stringMinutes = "0" + stringMinutes;
-                if (seconds < 10) stringSeconds = "0" + stringSeconds;
-                if (milliseconds < 10) stringMilliseconds = "0" + milliseconds;
 
                 if (seconds == 10 && millisUntilFinished < 10200 && !tickPlays) {
                     timerListener.onTimerWork(editText);
                     tickPlays = true;
                 }
 
-                editText.setText(stringMinutes + ":" + stringSeconds + ":" + stringMilliseconds);
+                editText.setText(stringNumber(minutes) + ":" + stringNumber(seconds) + ":" + stringNumber(milliseconds));
             }
 
             @Override
@@ -44,5 +37,11 @@ class Timer {
                 timerListener.onTimerFinish(editText);
             }
         }.start();
+    }
+
+    String stringNumber(long number) {
+        String stringNumber = Long.toString(number);
+        if (number < 10) stringNumber = "0" + stringNumber;
+        return stringNumber;
     }
 }
