@@ -1,20 +1,48 @@
 package com.ahmadstudios.sportimer;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.CountDownTimer;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 
 class Timer {
-
-    private boolean tickPlays; //Флаг, который определяет, начался ли проигрываться звук тиканья
+    Activity activity;
+    long time;
+    EditText timerEditText;
+    private String tag;
 
     interface TimerListener {
-        void onTimerFinish(EditText editText);
-        void onTimerWork(EditText editText);
+        void onTimerFinish();
     }
 
-    void startTimer(final TimerListener timerListener, final EditText editText, int minutes, int seconds) {
-        long time = minutes * 60000 + seconds * 1000;
-        tickPlays = false;
+    Timer(Activity mainActivity, EditText editText, String timerTag) {
+        activity = mainActivity;
+        timerEditText = editText;
+        tag = timerTag;
+    }
+
+    void chooseTime() {
+        timerEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    DialogFragment dialog = new SetTimerDialogFragment();
+                    dialog.show(activity.getFragmentManager(), tag);
+                }
+                return false;
+            }
+        });
+    }
+
+    void setTime(int minutes, int seconds) {
+        time = minutes * 60000 + seconds * 1000;
+        timerEditText.setText(stringNumber(minutes) + ":" + stringNumber(seconds) + ":00");
+    }
+
+    void start() {
+        final TimerListener timerListener = (TimerListener)activity;
 
         new CountDownTimer(time, 10) {
             @Override
@@ -23,18 +51,13 @@ class Timer {
                 long seconds = (millisUntilFinished - minutes * 60000) / 1000;
                 long milliseconds = ((millisUntilFinished - minutes * 60000) % 1000) / 10;
 
-                if (seconds == 10 && millisUntilFinished < 10200 && !tickPlays) {
-                    timerListener.onTimerWork(editText);
-                    tickPlays = true;
-                }
-
-                editText.setText(stringNumber(minutes) + ":" + stringNumber(seconds) + ":" + stringNumber(milliseconds));
+                timerEditText.setText(stringNumber(minutes) + ":" + stringNumber(seconds) + ":" + stringNumber(milliseconds));
             }
 
             @Override
             public void onFinish() {
-                editText.setText(R.string.zeros_of_timer);
-                timerListener.onTimerFinish(editText);
+                timerEditText.setText(R.string.zeros_of_timer);
+                timerListener.onTimerFinish();
             }
         }.start();
     }
