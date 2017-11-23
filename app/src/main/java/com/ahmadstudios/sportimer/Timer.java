@@ -42,7 +42,12 @@ class Timer {
     }
 
     void start() {
-        final TimerListener timerListener = (TimerListener)activity;
+        final TimerListener timerListener;
+        try {
+            timerListener = (TimerListener) activity;
+        } catch (ClassCastException castException) {
+            throw new ClassCastException(activity.toString() + " должен реализовывать интерфейс TimerListener");
+        }
 
         new CountDownTimer(time, 10) {
             @Override

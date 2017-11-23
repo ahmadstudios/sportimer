@@ -24,7 +24,7 @@ public class SetTimerDialogFragment extends DialogFragment {
         try {
             listener = (SetTimerDialogListener) activity;
         } catch (ClassCastException castException) {
-            throw new ClassCastException(activity.toString() + "должен реализовывать интерфейс SetTimerDialogListener");
+            throw new ClassCastException(activity.toString() + " должен реализовывать интерфейс SetTimerDialogListener");
         }
     }
 

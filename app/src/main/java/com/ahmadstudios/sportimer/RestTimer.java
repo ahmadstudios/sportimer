@@ -10,7 +10,7 @@ class RestTimer extends Timer {
     private boolean tickPlays;
 
     RestTimer (Activity mainActivity) {
-        super(mainActivity, (EditText)mainActivity.findViewById(R.id.restTimerEditText), "RestTimer");
+        super(mainActivity, (EditText) mainActivity.findViewById(R.id.restTimerEditText), "RestTimer");
     }
 
     interface TimerListener {
@@ -19,7 +19,13 @@ class RestTimer extends Timer {
 
     @Override
     void start() {
-        final TimerListener timerListener = (TimerListener)activity;
+        final TimerListener timerListener;
+        try {
+            timerListener = (TimerListener) activity;
+        } catch (ClassCastException castException) {
+            throw new ClassCastException(activity.toString() + " должен реализовывать интерфейс TimerListener");
+        }
+
         tickPlays = false;
 
         new CountDownTimer(time, 10) {

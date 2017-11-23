@@ -7,7 +7,7 @@ import android.widget.EditText;
 class ApproachTimer extends Timer {
 
     ApproachTimer (Activity mainActivity) {
-        super(mainActivity, (EditText)mainActivity.findViewById(R.id.approachTimerEditText), "ApproachTimer");
+        super(mainActivity, (EditText) mainActivity.findViewById(R.id.approachTimerEditText), "ApproachTimer");
     }
 
     @Override
